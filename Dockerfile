@@ -9,10 +9,10 @@ WORKDIR /app
 
 COPY requirements.txt .
 
-# Upgrade pip and setuptools to version 78.1.1 or higher to patch CVE-2025-47273
-RUN pip install --no-cache-dir --upgrade pip "setuptools>=78.1.1"
-
-RUN pip install --no-cache-dir -r requirements.txt
+# Force pip to upgrade setuptools past the vulnerable version
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir --upgrade "setuptools>=78.1.1" && \
+    pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
