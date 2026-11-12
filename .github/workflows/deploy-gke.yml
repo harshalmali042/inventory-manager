@@ -76,6 +76,13 @@ jobs:
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
+          
+      - name: Verify Requirements File Exists
+        run: |
+          if [ ! -f requirements.txt ]; then
+            echo "Error: requirements.txt is missing from the repository root!"
+            exit 1
+          fi
 
       - name: Configure Docker to Artifact Registry
         run: |
