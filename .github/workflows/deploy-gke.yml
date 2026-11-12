@@ -32,7 +32,7 @@ jobs:
       - name: Run Unit Tests & Generate Coverage
         run: |
           # Runs pytest, creates XML test reports and code coverage files
-          pytest --cov=. --cov-report=xml --junitxml=junit.xml
+          python -m pytest --cov=. --cov-report=xml --junitxml=junit.xml
           
       - name: SonarQube Scan
         uses: SonarSource/sonarcloud-github-action@master
