@@ -115,5 +115,5 @@ terraform apply -auto-approve
 * Managing cloud infrastructure with **Terraform**
 * Building and pushing **Docker images** for microservices
 * Automating deployment pipelines with **Jenkins**
-* Designing a complete **DevOps workflow** from code to production
+* Designing a complete **DevOps workflow** from code to production.
 
