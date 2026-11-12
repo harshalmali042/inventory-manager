@@ -52,7 +52,7 @@ jobs:
 
       - name: Build Temporary Local Docker Image
         run: |
-          docker build -t temp-app:${{ github.sha }} .
+          docker build --no-cache -t temp-app:${{ github.sha }} .
         
 
       - name: Run Trivy Vulnerability Scanner
