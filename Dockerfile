@@ -8,8 +8,10 @@ RUN apt-get update && apt-get upgrade -y && \
 WORKDIR /app
 
 COPY requirements.txt .
-# Upgrade pip and setuptools to latest patched versions globally
-RUN pip install --no-cache-dir --upgrade pip setuptools
+
+# Upgrade pip and setuptools to version 78.1.1 or higher to patch CVE-2025-47273
+RUN pip install --no-cache-dir --upgrade pip "setuptools>=78.1.1"
+
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
