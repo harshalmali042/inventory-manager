@@ -11,13 +11,13 @@ env:
   IMAGE_NAME: python-app
 
 jobs:
-  ci-pipeline:
+  dependencies:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0 
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -28,9 +28,61 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          
-      - name: SonarQube Scan
+
+  sonarscan:
+    needs: dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: SonarQube Scan & Quality Gate Check
         uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+
+  security-scan:
+    needs: sonarscan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Build Temporary Local Docker Image
+        run: |
+          docker build -t temp-app:${{ github.sha }} .
+        
+
+      - name: Run Trivy Vulnerability Scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'temp-app:${{ github.sha }}'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          severity: 'CRITICAL,HIGH'
+
+  
+  build-and-push:
+    needs: security-scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Configure Docker to Artifact Registry
+        run: |
+          gcloud auth configure-docker us-east1-docker.pkg.dev --quiet
+
+      - name: Build and Push Docker Image
+        run: |
+          IMAGE_TAG="us-east1-docker.pkg.dev/$PROJECT_ID/$IMAGE_NAME/app:${{ github.sha }}"
+          docker build -t $IMAGE_TAG .
+
