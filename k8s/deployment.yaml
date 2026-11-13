@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: python-app
-        image: us-east1-docker.pkg.dev/harshal-01/gke-project-repo-01/app:IMAGE_PLACEHOLDER   # <--- Place it right here under your container spec
+        image: IMAGE_PLACEHOLDER
         ports:
         - containerPort: 5000
