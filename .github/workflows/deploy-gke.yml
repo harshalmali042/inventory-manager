@@ -118,8 +118,8 @@ jobs:
         run: |
           IMAGE_TAG="us-east1-docker.pkg.dev/$PROJECT_ID/gke-project-repo-01/app:${{ github.sha }}"
           
-          sed -i "s|IMAGE_PLACEHOLDER|$IMAGE_TAG|g" deployment.yaml
+          sed -i "s|IMAGE_PLACEHOLDER|$IMAGE_TAG|g" k8s/deployment.yaml
           
-          kubectl apply -f deployment.yaml
+          kubectl apply -f k8s/deployment.yaml
           kubectl rollout status deployment/python-app
 
