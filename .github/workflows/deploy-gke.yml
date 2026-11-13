@@ -90,7 +90,7 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          IMAGE_TAG="us-east1-docker.pkg.dev/$PROJECT_ID/$IMAGE_NAME/app:${{ github.sha }}"
+          IMAGE_TAG="us-east1-docker.pkg.dev/$PROJECT_ID/gke-project-repo-01/app:${{ github.sha }}"
           docker build -t $IMAGE_TAG .
           docker push $IMAGE_TAG
 
