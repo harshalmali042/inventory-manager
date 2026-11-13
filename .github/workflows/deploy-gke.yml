@@ -8,9 +8,9 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  IMAGE_NAME: ${{ secrets.python-app }}
-  CLUSTER_NAME: ${{ secrets.YOUR_CLUSTER_NAME }}
-  CLUSTER_ZONE: ${{ secrets.us-east1 }}
+  IMAGE_NAME: python-app
+  CLUSTER_NAME: harshal-project-gke-01
+  CLUSTER_ZONE: us-east1-b
 
 jobs:
   dependencies:
