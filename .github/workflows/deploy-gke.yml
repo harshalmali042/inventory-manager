@@ -92,4 +92,5 @@ jobs:
         run: |
           IMAGE_TAG="us-east1-docker.pkg.dev/$PROJECT_ID/$IMAGE_NAME/app:${{ github.sha }}"
           docker build -t $IMAGE_TAG .
+          docker push $IMAGE_TAG
 
