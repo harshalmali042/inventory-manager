@@ -1,21 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: inventory
+  name: python-app
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
-      app: inventory
+      app: python-app
   template:
     metadata:
       labels:
-        app: inventory
+        app: python-app
     spec:
       containers:
-      - name: inventory-container
-        image: docker.io/harsh042/inventory-manager:latest
-        imagePullPolicy: IfNotPresent
-
+      - name: python-app
+        image: us-east1-docker.pkg.dev/harshal-01/gke-project-repo-01/app:IMAGE_PLACEHOLDER   # <--- Place it right here under your container spec
         ports:
         - containerPort: 5000
