@@ -8,7 +8,9 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  IMAGE_NAME: python-app
+  IMAGE_NAME: ${{ secrets.python-app }}
+  CLUSTER_NAME: ${{ secrets.YOUR_CLUSTER_NAME }}
+  CLUSTER_ZONE: ${{ secrets.us-east1 }}
 
 jobs:
   dependencies:
@@ -93,4 +95,29 @@ jobs:
           IMAGE_TAG="us-east1-docker.pkg.dev/$PROJECT_ID/gke-project-repo-01/app:${{ github.sha }}"
           docker build -t $IMAGE_TAG .
           docker push $IMAGE_TAG
+
+  deploy-to-gke:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Get GKE Cluster Credentials
+        uses: google-github-actions/get-gke-credentials@v2
+        with:
+          cluster_name: ${{ env.CLUSTER_NAME }}
+          location: ${{ env.CLUSTER_ZONE }}
+
+      - name: Deploy to GKE
+        run: |
+          IMAGE_TAG="us-east1-docker.pkg.dev/$PROJECT_ID/$IMAGE_NAME/app:${{ github.sha }}"
+          
+          # Replace placeholder in deployment.yaml with the exact commit SHA image tag
+          sed -i "s|IMAGE_PLACEHOLDER|$IMAGE_TAG|g" deployment.yaml
 
